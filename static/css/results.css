@@ -1,0 +1,256 @@
+/* Results Page Specific Styles */
+.results-page {
+    padding: 2rem 0;
+}
+
+/* Persona Summary */
+.persona-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.persona-info ul {
+    list-style: none;
+    margin: 1rem 0;
+}
+
+.persona-info li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.persona-info li:before {
+    content: "•";
+    color: var(--primary-color);
+    position: absolute;
+    left: 0;
+}
+
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.category-tag {
+    background-color: var(--gray-light);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    color: var(--text-color);
+}
+
+/* Gift Recommendations Grid */
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.gift-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: var(--transition);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.gift-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.gift-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.gift-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gift-info {
+    padding: 1.5rem;
+}
+
+.gift-info h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.gift-price {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.gift-description {
+    color: var(--gray-medium);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.gift-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+}
+
+.rating {
+    color: #f59e0b;
+}
+
+.platform {
+    color: var(--gray-medium);
+}
+
+.gift-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.view-details-btn, .buy-now-btn {
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.view-details-btn {
+    background-color: var(--gray-light);
+    border: none;
+    color: var(--text-color);
+}
+
+.buy-now-btn {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    text-decoration: none;
+}
+
+.view-details-btn:hover {
+    background-color: var(--gray-medium);
+    color: white;
+}
+
+.buy-now-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    background-color: white;
+    margin: 2rem auto;
+    padding: 2rem;
+    width: 90%;
+    max-width: 800px;
+    border-radius: var(--border-radius);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.close-modal {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-product-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.product-info {
+    padding: 1rem 0;
+}
+
+.review-summary {
+    margin: 1.5rem 0;
+}
+
+.pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.pros ul, .cons ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.pros li, .cons li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.pros li:before {
+    content: "✓";
+    color: #22c55e;
+    position: absolute;
+    left: 0;
+}
+
+.cons li:before {
+    content: "×";
+    color: #ef4444;
+    position: absolute;
+    left: 0;
+}
+
+.discount-code {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--gray-light);
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .pros-cons {
+        grid-template-columns: 1fr;
+    }
+    
+    .gift-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        margin: 1rem;
+        padding: 1rem;
+    }
+}

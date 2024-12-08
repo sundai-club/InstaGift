@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Recommendations - InstaGift</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <a href="/" class="logo">InstaGift</a>
+                <div class="nav-links">
+                    <a href="/">New Search</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="results-page">
+            <section class="persona-summary">
+                <h2>Gift Recommendations</h2>
+                <div class="persona-card">
+                    <div class="persona-info">
+                        <h3>Based on their profile:</h3>
+                        <ul>
+                            {% for trait in persona.traits %}
+                            <li>{{ trait }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="gift-categories">
+                        <h3>Suggested Categories:</h3>
+                        <div class="category-tags">
+                            {% for category in persona.categories %}
+                            <span class="category-tag">{{ category }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="gift-recommendations">
+                <div class="recommendations-grid">
+                    {% for gift in recommendations %}
+                    <div class="gift-card" data-id="{{ gift.id }}">
+                        <div class="gift-image">
+                            <img src="{{ gift.image_url }}" alt="{{ gift.name }}">
+                        </div>
+                        <div class="gift-info">
+                            <h3>{{ gift.name }}</h3>
+                            <p class="gift-price">${{ gift.price }}</p>
+                            <p class="gift-description">{{ gift.description }}</p>
+                            <div class="gift-meta">
+                                <span class="rating">★ {{ gift.rating }}</span>
+                                <span class="platform">{{ gift.platform }}</span>
+                            </div>
+                            <div class="gift-actions">
+                                <button class="view-details-btn">View Details</button>
+                                <a href="{{ gift.affiliate_link }}" target="_blank" class="buy-now-btn">Buy Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <div id="gift-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <div class="modal-body">
+                        <div class="product-details">
+                            <img src="" alt="" class="modal-product-image">
+                            <div class="product-info">
+                                <h3></h3>
+                                <p class="price"></p>
+                                <div class="review-summary">
+                                    <h4>Review Summary</h4>
+                                    <div class="pros-cons">
+                                        <div class="pros">
+                                            <h5>Pros</h5>
+                                            <ul></ul>
+                                        </div>
+                                        <div class="cons">
+                                            <h5>Cons</h5>
+                                            <ul></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="purchase-section">
+                                    <a href="" target="_blank" class="buy-now-btn">Buy Now</a>
+                                    <div class="discount-code"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>InstaGift</h4>
+                    <p>Making gift-giving simple and meaningful</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links</h4>
+                    <a href="/">New Search</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/results.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstaGift - AI Gift Finder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --holiday-red: #D42426;
+            --holiday-green: #2F5233;
+            --holiday-gold: #f1c40f;
+            --snow-white: #ffffff;
+            --gradient-start: #2c3e50;
+            --gradient-end: #3498db;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--holiday-red), var(--holiday-green));
+            position: relative;
+            color: #2c3e50;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .snowflake {
+            position: fixed;
+            color: white;
+            text-shadow: 0 0 2px rgba(255,255,255,0.3);
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--gradient-start);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--holiday-red), var(--holiday-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .lead {
+            font-size: 1.5rem;
+            color: var(--gradient-start);
+        }
+
+        .header .fa-gifts {
+            color: var(--holiday-gold);
+            margin: 0 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .instructions-container {
+            margin-bottom: 3rem;
+        }
+
+        .step-card {
+            border: 2px solid var(--holiday-green);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 30px;
+            height: 30px;
+            background-color: var(--holiday-red);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            color: var(--holiday-gold);
+            margin-bottom: 1rem;
+        }
+
+        .samples-container {
+            margin: 3rem 0;
+            padding: 2rem;
+            border: 2px dashed var(--holiday-red);
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .samples-container::before {
+            content: '🎄';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: white;
+            padding: 0 10px;
+            font-size: 1.5rem;
+        }
+
+        .sample-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .sample-card {
+            border: 2px solid var(--holiday-green);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            background: white;
+            transition: transform 0.3s;
+        }
+
+        .sample-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .sample-card img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid var(--holiday-green);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--holiday-green);
+            border-color: var(--holiday-green);
+        }
+
+        .btn-primary:hover {
+            background-color: #084d1a;
+            border-color: #084d1a;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        #loading .fa-spinner {
+            color: var(--holiday-red);
+        }
+
+        .gift-recommendations {
+            margin-top: 3rem;
+        }
+
+        .gift-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid var(--holiday-green);
+        }
+
+        .gift-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .gift-card-header {
+            background: linear-gradient(135deg, var(--holiday-red), var(--holiday-green));
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .gift-card-header h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .gift-card-header .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--holiday-gold);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .gift-card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gift-card .description {
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .gift-card .match-reason {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .gift-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .gift-link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .amazon-link {
+            background-color: #232F3E;
+            color: white !important;
+        }
+
+        .amazon-link:hover {
+            background-color: #131921;
+            transform: translateY(-2px);
+        }
+
+        .etsy-link {
+            background-color: #F1641E;
+            color: white !important;
+        }
+
+        .etsy-link:hover {
+            background-color: #D35400;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Snowflakes will be added by JavaScript -->
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-gifts"></i> InstaGift <i class="fas fa-gifts"></i></h1>
+            <p class="lead">Discover the Perfect Holiday Gifts with AI Magic! 🎄✨</p>
+        </div>
+
+        <!-- Instructions Section -->
+        <div class="instructions-container">
+            <h2 class="text-center mb-4">How It Works</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h4>Upload Instagram Grid</h4>
+                        <p>Share their Instagram profile screenshot</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h4>Add Details</h4>
+                        <p>Tell us their age and interests</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <h4>Set Budget</h4>
+                        <p>Choose your spending limit</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <h4>Get Recommendations</h4>
+                        <p>Let our holiday elves work their magic!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Grids Section -->
+        <div class="samples-container">
+            <h2 class="text-center mb-4">Sample Instagram Grids</h2>
+            <div class="sample-grid">
+                <div class="sample-card">
+                    <h4>💕 Michelle</h4>
+                    <p>Art & Creativity Enthusiast</p>
+                    <img src="/static/samples/Michelle.png" alt="Art and creativity focused Instagram">
+                </div>
+                <div class="sample-card">
+                    <h4>🏃‍♀️ Nina</h4>
+                    <p>Fitness & Health Guru</p>
+                    <img src="/static/samples/Nina.png" alt="Fitness and health focused Instagram">
+                </div>
+                <div class="sample-card">
+                    <h4>💻 Kareem</h4>
+                    <p>Tech & Gaming Pro</p>
+                    <img src="/static/samples/Kareem.png" alt="Tech and gaming focused Instagram">
+                </div>
+            </div>
+        </div>
+
+        <!-- Gift Finder Form -->
+        <div class="form-container">
+            <h2 class="text-center mb-4">Find the Perfect Gift</h2>
+            <form id="gift-finder-form" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="instagram-grid" class="form-label">
+                        <i class="fab fa-instagram"></i> Instagram Grid Screenshot
+                    </label>
+                    <input type="file" class="form-control" id="instagram-grid" name="instagram-grid" accept="image/*" required>
+                    <div id="preview-container" class="mt-2"></div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="age" class="form-label">
+                        <i class="fas fa-birthday-cake"></i> Gift Recipient's Age
+                    </label>
+                    <input type="number" class="form-control" id="age" name="age" required min="1" max="120">
+                </div>
+
+                <div class="mb-4">
+                    <label for="interests" class="form-label">
+                        <i class="fas fa-heart"></i> Interests & Personality
+                    </label>
+                    <textarea class="form-control" id="interests" name="interests" rows="3" 
+                        placeholder="e.g., photography, gaming, outdoor activities..." required></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="budget" class="form-label">
+                        <i class="fas fa-gift"></i> Holiday Budget
+                    </label>
+                    <input type="number" class="form-control" id="budget" name="budget" required min="1">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-3">
+                    <i class="fas fa-search"></i> Find Perfect Holiday Gifts
+                </button>
+            </form>
+        </div>
+
+        <div id="loading">
+            <i class="fas fa-spinner fa-spin fa-3x"></i>
+            <p>Our holiday elves are finding the perfect gifts... 🎅</p>
+        </div>
+
+        <div id="results" class="mt-4"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add snowflakes
+        function createSnowflakes() {
+            const snowflakes = 50;
+            for (let i = 0; i < snowflakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = '❄';
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+                snowflake.style.opacity = Math.random();
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                document.body.appendChild(snowflake);
+            }
+        }
+
+        createSnowflakes();
+
+        // Preview uploaded image
+        document.getElementById('instagram-grid').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('preview-container');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; border-radius: 10px; margin-top: 1rem;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('gift-finder-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading, hide results
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.error) {
+                    document.getElementById('results').innerHTML = `
+                        <div class="alert alert-danger" role="alert">
+                            ${data.error}
+                        </div>
+                    `;
+                    document.getElementById('results').style.display = 'block';
+                    return;
+                }
+                
+                // Display results
+                let resultsHtml = `
+                    <div class="gift-recommendations">
+                        <h2 class="text-center mb-4">🎄 Perfect Holiday Gift Suggestions 🎁</h2>
+                        <div class="row">
+                `;
+                
+                data.recommendations.forEach(gift => {
+                    resultsHtml += `
+                        <div class="col-md-6 mb-4">
+                            <div class="gift-card">
+                                <div class="gift-card-header">
+                                    <h4>${gift.name}</h4>
+                                    <div class="price">$${gift.price.toFixed(2)}</div>
+                                </div>
+                                <div class="gift-card-body">
+                                    <p class="description">${gift.description}</p>
+                                    <p class="match-reason">${gift.match_reason}</p>
+                                    <div class="gift-links">
+                    `;
+                    
+                    if (gift.amazon_link) {
+                        resultsHtml += `
+                            <a href="${gift.amazon_link}" target="_blank" class="gift-link amazon-link">
+                                <i class="fab fa-amazon"></i> View on Amazon
+                            </a>
+                        `;
+                    }
+                    
+                    if (gift.etsy_link) {
+                        resultsHtml += `
+                            <a href="${gift.etsy_link}" target="_blank" class="gift-link etsy-link">
+                                <i class="fab fa-etsy"></i> View on Etsy
+                            </a>
+                        `;
+                    }
+                    
+                    resultsHtml += `
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultsHtml += `
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('results').innerHTML = resultsHtml;
+                document.getElementById('results').style.display = 'block';
+                
+                // Smooth scroll to results
+                document.getElementById('results').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results').innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        An error occurred. Please try again.
+                    </div>
+                `;
+                document.getElementById('results').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
